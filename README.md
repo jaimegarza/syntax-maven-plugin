@@ -1,2 +1,0 @@
-syntax-maven-plugin
-===================
