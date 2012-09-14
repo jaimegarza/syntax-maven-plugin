@@ -142,30 +142,45 @@ public class SyntaxMavenPluginMojo extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException {
 
-    
-    countFlags();
-    countFiles();
-
-    int i;
-    String args[] = new String[ARGS + numberOfFlags + numberOfFiles];
-    
-    i = setArguments(args);
-    i = setFlags(i, args);
-    setFiles(i, args);
-    
-    Environment environment = new Environment("Syntax", args);
-    Syntax syntax = new Syntax(environment);
     try {
-      syntax.executeInternal();
-    } catch (ParsingException e) {
-      throw new MojoExecutionException("the source file cannot be parsed", e);
-    } catch (AnalysisException e) {
-      throw new MojoExecutionException("the source file cannot be analyzed", e);
-    } catch (OutputException e) {
-      throw new MojoExecutionException("the source file cannot be written to", e);
-    } finally {
-      environment.release();
+      countFlags();
+      countFiles();
+  
+      int i;
+      String args[] = new String[ARGS + numberOfFlags + numberOfFiles];
+      
+      i = setArguments(args);
+      i = setFlags(i, args);
+      setFiles(i, args);
+      
+      Environment environment = new Environment("Syntax", args);
+      Syntax syntax = new Syntax(environment);
+      try {
+        syntax.executeInternal();
+      } catch (ParsingException e) {
+        throw new MojoExecutionException("the source file cannot be parsed", e);
+      } catch (AnalysisException e) {
+        throw new MojoExecutionException("the source file cannot be analyzed", e);
+      } catch (OutputException e) {
+        throw new MojoExecutionException("the source file cannot be written to", e);
+      } finally {
+        environment.release();
+      }
+    } catch (MojoExecutionException e) {
+      System.err.println(e.getMessage());
+      throw e;
     }
+  }
+
+  /**
+   * How many flags need to be passed to syntax?
+   */
+  private void countFlags() {
+    numberOfFlags = 0;
+
+    if (verbose) numberOfFlags++;
+    if (debug) numberOfFlags++;
+    if (!emitLine) numberOfFlags++;
   }
 
   /**
@@ -185,7 +200,8 @@ public class SyntaxMavenPluginMojo extends AbstractMojo {
     
     if (ls == null) {
       throw new MojoExecutionException("language is not supported");
-    }    numberOfFiles = 0;
+    }
+    numberOfFiles = 0;
     if (sourceFile == null) {
       throw new MojoExecutionException("sourceFile was not provided");
     }
@@ -195,9 +211,10 @@ public class SyntaxMavenPluginMojo extends AbstractMojo {
     }
     numberOfFiles++;
     if (includeFile == null && reportFile != null) {
-      numberOfFiles++;
       includeFile = new File(replaceExtension(outputFile.getAbsolutePath(), ls.getIncludeExtensionSuffix()));
-    } else {
+    }
+    
+    if (includeFile != null) {
       numberOfFiles++;
     }
     if (reportFile != null) {
@@ -206,14 +223,36 @@ public class SyntaxMavenPluginMojo extends AbstractMojo {
   }
 
   /**
-   * How many flags need to be passed to syntax?
+   * Setup the standard arguments in the argument array
+   * @param args is the argument array
+   * @return the index from where other items need to be added
    */
-  private void countFlags() {
-    numberOfFlags = 0;
+  private int setArguments(String[] args) {
+    int i = 0;
+    args[i++] = "--language";
+    args[i++] = this.language;
+    args[i++] = "--algorithm";
+    args[i++] = this.algorithm;
+    args[i++] = "--packing";
+    args[i++] = this.packed ? "packed" : "tabular";
+    args[i++] = "--external";
+    args[i++] = this.externalInclude ? "true" : "false";
+    args[i++] = "--driver";
+    args[i++] = this.driver;
+    return i;
+  }
 
-    if (verbose) numberOfFlags++;
-    if (debug) numberOfFlags++;
-    if (!emitLine) numberOfFlags++;
+  /**
+   * Put the flags in the argument array
+   * @param i the current index
+   * @param args is the argument array
+   * @return the new index
+   */
+  private int setFlags(int i, String[] args) {
+    if (verbose) args[i++] = "-v";
+    if (debug) args[i++] = "-g";
+    if (!emitLine) args[i++] = "-n";
+    return i;
   }
 
   /**
@@ -232,38 +271,6 @@ public class SyntaxMavenPluginMojo extends AbstractMojo {
       args[i++] = reportFile.getAbsolutePath();
     }
     return i;
-  }
-
-  /**
-   * Put the flags in the argument array
-   * @param i the current index
-   * @param args is the argument array
-   * @return the new index
-   */
-  private int setFlags(int i, String[] args) {
-    if (verbose) args[i++] = "-v";
-    if (debug) args[i++] = "-g";
-    if (!emitLine) args[i++] = "-n";
-    return i;
-  }
-
-  /**
-   * Setup the standard arguments in the argument array
-   * @param args is the argument array
-   * @return the index from where other items need to be added
-   */
-  private int setArguments(String[] args) {
-    args[0] = "--language";
-    args[1] = this.language;
-    args[2] = "--algorithm";
-    args[3] = this.algorithm;
-    args[4] = "--packing";
-    args[5] = this.packed ? "packed" : "tabular";
-    args[6] = "--external";
-    args[7] = this.externalInclude ? "true" : "false";
-    args[8] = "--driver";
-    args[9] = this.driver;
-    return ARGS;
   }
 
   /**

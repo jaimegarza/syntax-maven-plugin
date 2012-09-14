@@ -27,7 +27,7 @@
   <scm>
     <developerConnection>scm:git:git@github.com:jaimegarza/syntax-maven-plugin.git</developerConnection>
     <connection>scm:git:git@github.com:jaimegarza/syntax-maven-plugin.git</connection>
-    <url>git@github.com:jaimegarza/syntax-maven-plugin.git</url>
+    <url>https://github.com/jaimegarza/syntax-maven-plugin.git</url>
   </scm>
 
   <developers>
