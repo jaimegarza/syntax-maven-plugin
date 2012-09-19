@@ -263,14 +263,21 @@ public class SyntaxMavenPluginMojo extends AbstractMojo {
    */
   private int setFiles(int i, String[] args) {
     args[i++] = sourceFile.getAbsolutePath();
+    mkdirs(outputFile);
     args[i++] = outputFile.getAbsolutePath();
     if (includeFile != null) {
+      mkdirs(includeFile);
       args[i++] = includeFile.getAbsolutePath();
     }
     if (reportFile != null) {
+      mkdirs(reportFile);
       args[i++] = reportFile.getAbsolutePath();
     }
     return i;
+  }
+  
+  private void mkdirs(File file) {
+    file.getParentFile().mkdirs();
   }
 
   /**
