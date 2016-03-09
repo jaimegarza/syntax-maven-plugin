@@ -4,7 +4,7 @@
 
   <groupId>me.jaimegarza</groupId>
   <artifactId>syntax-maven-plugin</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <packaging>maven-plugin</packaging>
 
   <!-- needed for Sonatype OSS repository https://oss.sonatype.org -->
@@ -86,7 +86,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!-- <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.8.1</version>
@@ -98,7 +98,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin>  -->
     </plugins>
     <pluginManagement>
       <plugins>
@@ -181,7 +181,7 @@
     <dependency>
       <groupId>me.jaimegarza</groupId>
       <artifactId>syntax</artifactId>
-      <version>4.0.3</version>
+      <version>4.1.0</version>
     </dependency>
   </dependencies>
 
