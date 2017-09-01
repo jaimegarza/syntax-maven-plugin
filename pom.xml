@@ -4,7 +4,7 @@
 
   <groupId>me.jaimegarza</groupId>
   <artifactId>syntax-maven-plugin</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <packaging>maven-plugin</packaging>
 
   <name>Syntax Maven Plugin</name>
@@ -123,6 +123,20 @@
                     <versionRange>[1.0.0,)</versionRange>
                     <goals>
                       <goal>enforce</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>helpmojo</goal>
+                      <goal>descriptor</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
